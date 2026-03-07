@@ -80,7 +80,7 @@ export class EditCourseDialogComponent {
 
       } catch(err) {
         console.error(err);
-        alert('Failed to update course');
+        alert('Failed to create course');
       }
       
     }
