@@ -5,7 +5,7 @@ import {setTimeout} from 'timers';
 
 export function saveLesson(req: Request, res: Response) {
 
-  const id = req.params["id"],
+  const id = req.params["id"] as string,
     changes = req.body;
 
   console.log("Saving lesson changes", id, JSON.stringify(changes));

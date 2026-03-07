@@ -22,6 +22,7 @@ import {
   outputFromObservable,
 } from '@angular/core/rxjs-interop';
 import { CoursesServiceWithFetch } from '../services/courses-fetch.service';
+import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
 
 @Component({
   selector: 'home',
@@ -33,6 +34,7 @@ export class HomeComponent implements OnInit {
   #courses = signal<Course[]>([]);
 
   coursesService = inject(CoursesService);
+  dialog = inject(MatDialog);
 
   beginnerCourses = computed(() => {
     const courses = this.#courses();
@@ -43,7 +45,6 @@ export class HomeComponent implements OnInit {
     const courses = this.#courses();
     return courses.filter((course) => course.category === 'ADVANCED');
   });
-
   constructor() {
     effect (() => {
         console.log(`Beginer Courses:`, this.beginnerCourses());
@@ -57,12 +58,50 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  async loadCourses() {
+  async loadCourses(): Promise<void> {
     try {
       const courses = await this.coursesService.loadAllCourses();
       this.#courses.set(courses.sort(sortCoursesBySeqNo));
     } catch (err) {
       (alert(`Failed loaded courses`), console.log(err));
     }
+  }
+
+  async onAddCourse() {
+    const newCourse = await openEditCourseDialog(
+      this.dialog,
+      {
+        mode: "create",
+        title: "Create New Course"
+      }
+    );
+    console.log('Course Added: ', newCourse);
+    const newCourses = [
+      ...this.#courses(),
+      newCourse
+    ];
+    this.#courses.set(newCourses);
+  }
+
+  onCourseUpdated(updatedCourse: Course) {
+    const courses = this.#courses();
+    const newCourses = courses.map(
+      course => 
+        (course.id === updatedCourse.id) ? updatedCourse : course
+    )
+    this.#courses.set(newCourses);
+  }
+
+  async onCourseDeleted(courseId: string) {
+    try {
+          await this.coursesService.deleteCourse(courseId);
+          const courses = this.#courses();
+          const newCourses = courses.filter(course => (course.id !==courseId));
+          this.#courses.set(newCourses);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to deleting course');
+    }
+
   }
 }

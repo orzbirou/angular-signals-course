@@ -6,7 +6,7 @@ export function deleteCourse(req: Request, res: Response) {
 
   console.log("Deleting course ...");
 
-  const id = req.params["id"];
+  const id = req.params["id"] as string;
 
   const course = COURSES[id];
 

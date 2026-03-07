@@ -12,7 +12,7 @@ export function saveCourse(req: Request, res: Response) {
   */
 
 
-  const id = req.params["id"],
+  const id = req.params["id"] as string,
     changes = req.body;
 
   console.log("Saving course changes", id, JSON.stringify(changes));
