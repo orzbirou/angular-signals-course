@@ -28,13 +28,14 @@ import { firstValueFrom } from 'rxjs';
 export class EditCourseDialogComponent {
   dialogRef = inject(MatDialogRef);
   data:EditCourseDialogData = inject(MAT_DIALOG_DATA);
+
+  category = signal<CourseCategory>('BEGINNER');
  
 
   fb = inject(FormBuilder);
   form = this.fb.group({
     title: [''],
     longDescription: [''],
-    category: [''],
     iconUrl: ['']
   });
    coursesService = inject(CoursesService);
@@ -43,13 +44,14 @@ export class EditCourseDialogComponent {
       this.form.patchValue({
         title: this.data?.course?.title,
         longDescription: this.data?.course?.longDescription,
-        category: this.data?.course?.category,
         iconUrl: this.data?.course?.iconUrl
-      })
+      });
+      this.category.set(this.data?.course?.category ?? 'BEGINNER');
     }
 
     async onSave() {
       const courseProps = this.form.value as Partial<Course>;
+      courseProps.category = this.category();
       if(this.data?.mode === "update"){
         await this.saveCourse(this.data.course!.id, courseProps);
       } else if(this.data?.mode === "create") {

@@ -23,6 +23,9 @@ export class CoursesCardListComponent {
       title: `Update ${course.title}`,
       course,
     });
+    if(!newCourse) {
+      return;
+    }
     console.log('Course Edited: ', newCourse);
     this.courseUpdated.emit(newCourse)
   }
