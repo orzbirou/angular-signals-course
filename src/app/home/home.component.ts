@@ -24,10 +24,11 @@ import {
 import { CoursesServiceWithFetch } from '../services/courses-fetch.service';
 import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
 import { LoadingService } from '../loading/loading.service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'home',
-  imports: [MatTabGroup, MatTab, CoursesCardListComponent],
+  imports: [MatTabGroup, MatTab, CoursesCardListComponent, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
