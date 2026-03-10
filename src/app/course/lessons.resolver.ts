@@ -13,5 +13,5 @@ export const lessonsResolver: ResolveFn<Lesson[] | null> = async (route: Activat
     }
 
     const lessonsService = inject(LessonsService);
-    return lessonsService.getLessonsByCourseId({courseId});
+    return lessonsService.loadLessons({courseId});
 }

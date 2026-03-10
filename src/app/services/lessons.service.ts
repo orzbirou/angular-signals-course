@@ -12,7 +12,7 @@ export class LessonsService {
   env = environment;
   http = inject(HttpClient);
 
-  async getLessonsByCourseId(config: {
+  async loadLessons(config: {
     courseId?: string;
     query?: string;
   }): Promise<Lesson[]> {
@@ -32,5 +32,10 @@ export class LessonsService {
     );
     const response = await firstValueFrom(lessons$);
     return response.lessons;
+  }
+
+  async saveLesson(lessonId: string, changes: Partial<Lesson>) : Promise<Lesson>{
+    const lesson$ =  this.http.put<Lesson>(`${this.env.apiRoot}/lessons/${lessonId}`, changes);
+    return await firstValueFrom(lesson$);
   }
 }

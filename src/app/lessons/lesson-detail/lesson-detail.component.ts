@@ -14,6 +14,21 @@ import {MessagesService} from "../../messages/messages.service";
 })
 export class LessonDetailComponent {
 
+    lesson = input.required<Lesson | null>();
+    lessonUpdated = output<Lesson>();
+    cancel = output<void>();
+
+    lessonsService = inject(LessonsService);
+
+    onCancel() {
+        this.cancel.emit();
+    }
+
+    async onSave(description: string) {
+        const lessonId = this.lesson()!.id
+        const updatedLesson = await this.lessonsService.saveLesson(lessonId, {description});
+        this.lessonUpdated.emit(updatedLesson);
+    }
 
 
 }
