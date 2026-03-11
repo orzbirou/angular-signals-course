@@ -1,6 +1,6 @@
 import {Component, effect, inject, resource, signal} from "@angular/core";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {environment} from "../../environments/environment";
+import {environment} from "../../environments/environment.development";
 import {Lesson} from "../models/lesson.model";
 
 
@@ -16,8 +16,22 @@ export class ResourceDemoComponent {
 
   search = signal<string>('');
 
-  lessons = signal<Lesson[]>([])
-
+  lessons = resource<Lesson[], {search: string}>(
+    {
+      params: () => ({
+        search: this.search()
+      }),
+      loader: async ({params, abortSignal}) => {
+        const response = await fetch(`${this.env.apiRoot}/search-lessons?query=${params.search}&courseId=18`,
+          {
+            signal: abortSignal
+          }
+        )
+        const json = await response.json();
+        return json.lessons;
+      }
+    }
+  )
   constructor() {
 
     effect(() => {
